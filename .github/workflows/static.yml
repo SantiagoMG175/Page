@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorpresa</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            background-color: #2e003e;
+            background-image: radial-gradient(circle at top, #4b0082, #2e003e);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            width: 60vw;
+            height: 60vw;
+            max-width: 600px;
+            max-height: 600px;
+            background: radial-gradient(circle, rgba(255, 120, 200, 0.3), transparent 70%);
+            top: -20%;
+            left: -20%;
+            filter: blur(100px);
+            animation: moveGlow 10s infinite alternate;
+            z-index: 0;
+        }
+
+        @keyframes moveGlow {
+            to {
+                transform: translate(30vw, 20vh);
+            }
+        }
+
+        .screen {
+            position: absolute;
+            width: 100%;
+            height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
+            transition: 0.8s ease;
+            z-index: 1;
+        }
+
+        .screen.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: all;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            margin-bottom: 20px;
+        }
+
+        p {
+            max-width: 90%;
+            font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+            margin-bottom: 30px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        button {
+            padding: clamp(12px, 3vw, 16px) clamp(20px, 5vw, 32px);
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #ff7eb3, #ff758c);
+            color: white;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            cursor: pointer;
+            transition: 0.4s;
+
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(15px);
+        }
+
+        button.show {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+
+        button:hover {
+            transform: scale(1.08);
+        }
+
+        .final {
+            font-size: clamp(2.2rem, 8vw, 4rem);
+            font-family: 'Playfair Display', serif;
+            opacity: 0;
+            transform: scale(0.7);
+            transition: 1s;
+        }
+
+        .final.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="screen active" id="s1">
+        <h1>¿Sabes qué haces aquí? 👀</h1>
+        <p>
+            No es casualidad…<br>
+            20 años conociéndote no pasan desapercibidos.<br>
+            Hay historias que simplemente se quedan para siempre.
+        </p>
+        <button onclick="next(2)">Continuar</button>
+    </div>
+
+    <div class="screen" id="s2">
+        <h1>Lo que pasa es que…</h1>
+        <p>
+            Hoy cumples 25.<br>
+            Y no es solo un número…<br>
+            es todo lo que has crecido, cambiado y construido con el tiempo.
+        </p>
+        <button onclick="next(3)">Siguiente</button>
+    </div>
+
+    <div class="screen" id="s3">
+        <h1>Quiero desearte…</h1>
+        <p>
+            Que sigas siendo esa persona que he visto durante tantos años.<br>
+            Con tu forma de ser, tu esencia y todo eso que te hace única.<br>
+            Porque gente así no se encuentra todos los días.
+        </p>
+        <button onclick="next(4)">Descubrir</button>
+    </div>
+
+    <div class="screen" id="s4">
+        <h1 class="final" id="finalText">🎉 FELIZ CUMPLEAÑOS 🎉</h1>
+        <p>
+            Gracias por todos estos años de amistad.<br>
+            De verdad, tenerte en mi vida es algo que vale muchísimo ✨
+        </p>
+    </div>
+
+    <script>
+        function showButton(screenId) {
+            const btn = document.querySelector(`#s${screenId} button`);
+            if (!btn) return;
+
+            btn.classList.remove("show");
+
+            setTimeout(() => {
+                btn.classList.add("show");
+            }, 5000);
+        }
+
+        showButton(1);
+
+        function next(n) {
+            document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+            document.getElementById("s" + n).classList.add("active");
+
+            showButton(n);
+
+            if (n === 4) {
+                setTimeout(() => {
+                    document.getElementById("finalText").classList.add("show");
+                    confetti();
+                }, 300);
+            }
+        }
+
+        function confetti() {
+            for (let i = 0; i < 120; i++) {
+                let c = document.createElement("div");
+                c.style.position = "fixed";
+                c.style.width = "6px";
+                c.style.height = "6px";
+                c.style.background = `hsl(${Math.random() * 360},100%,60%)`;
+                c.style.top = "-10px";
+                c.style.left = Math.random() * window.innerWidth + "px";
+                c.style.zIndex = 999;
+
+                document.body.appendChild(c);
+
+                let anim = c.animate([
+                    { transform: "translateY(0px)" },
+                    { transform: `translateY(${window.innerHeight}px)` }
+                ], {
+                    duration: 2000 + Math.random() * 2000,
+                    easing: "linear"
+                });
+
+                anim.onfinish = () => c.remove();
+            }
+        }
+    </script>
+
+</body>
+
+</html>
